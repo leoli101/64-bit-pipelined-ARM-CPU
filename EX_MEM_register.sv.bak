@@ -1,0 +1,26 @@
+module EX_MEM_register(MemWrite_reg, MemToReg_reg, read_en_reg, RegWrite_reg, instr_reg_ex,
+								MemWrite_reg_mem, MemToReg_reg_mem, read_en_reg_mem, RegWrite_reg_mem, instr_reg_mem);
+
+	input logic MemWrite_reg, MemToReg_reg, read_en_reg, RegWrite_reg;
+	input logic[63:0] instr_reg_ex;
+	
+	output logic MemWrite_reg_mem, MemToReg_reg_mem, read_en_reg_mem, RegWrite_reg_mem;
+	output logic[63:0] instr_reg_mem;
+	
+	genvar i;
+	
+	generate
+	
+		for (i = 0; i < 64; i++) begin : each_1
+			D_FF each_dff(.q(instr_reg_mem[i]), .d(instr_reg_ex[i]), .reset(1'b0), .clk);
+		end
+		
+	endgenerate
+	
+	// control signal
+	D_FF each_dff(.q(MemWrite_reg_mem), .d(MemWrite_reg), .reset(1'b0), .clk);
+	D_FF each_dff(.q(MemToReg_reg_mem), .d(MemToREg_reg), .reset(1'b0), .clk);
+	D_FF each_dff(.q(read_en_reg_mem), .d(read_en_reg), .reset(1'b0), .clk);
+	D_FF each_dff(.q(RegWrite_reg_mem), .d(RegWrite_reg), .reset(1'b0), .clk);
+	
+endmodule

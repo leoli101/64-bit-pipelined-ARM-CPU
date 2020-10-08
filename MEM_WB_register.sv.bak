@@ -1,0 +1,22 @@
+module MEM_WB_register(dmem_out, dmem_out_reg, RegWrite_reg_mem, RegWrite_reg_wb);
+
+	input logic[63:0] dmem_out;
+	input logic RegWrite_reg_mem;
+	
+	output logic[63:0] dmem_out_reg;
+	output logic RegWrite_reg_wb;
+	
+	genvar i;
+	
+	generate
+	
+		for (i = 0; i < 64; i++) begin : each_1
+			D_FF each_dff(.q(dmem_out_reg[i]), .d(dmem_out[i]), .reset(1'b0), .clk);
+		end
+		
+	endgenerate
+
+	// control signal
+	D_FF each_dff(.q(RegWrite_reg_wb), .d(RegWrite_reg_mem), .reset(1'b0), .clk);
+	
+endmodule

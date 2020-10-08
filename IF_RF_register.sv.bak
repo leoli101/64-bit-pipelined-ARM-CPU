@@ -1,0 +1,35 @@
+module IF_RF_register(instr_in, instr_out, clk);
+
+	input logic clk;
+	input logic[63:0] instr_in;
+	output logic[63:0] instr_out;
+	
+	genvar i;
+	
+	generate
+		for (i = 0; i < 63; i++) begin : each_dff
+			D_FF dff_itr(.q(instr_out[i]), .d(instr_in[i]), .reset(1'b0), .clk(clk));
+		end
+	endgenerate
+endmodule
+
+//module IF_RF_register_testbench();
+//
+//	logic clk;
+//	logic[63:0] instr_in;
+//	logic[63:0] instr_out;
+//	
+//	IF_RF_register dut(.instr_in, instr_out, clk);
+//	
+//	parameter CLOCK_PERIOD=50;
+//	initial begin
+//		clk <= 0;
+//		forever #(CLOCK_PERIOD/2) clk <= ~clk;
+//	end
+//	
+//	initial begin
+//	
+//	end
+//endmodule
+
+

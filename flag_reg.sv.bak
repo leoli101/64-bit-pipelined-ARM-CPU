@@ -1,0 +1,18 @@
+`timescale 1ns/10ps
+module flag_reg(new_flag, flag_en, q, clk, reset);
+	input logic new_flag, clk, reset, flag_en;
+	output logic q;
+	logic d;
+	
+	mux2_1 mux_1(.data1_in(q), .data2_in(new_flag), .data_out(d), .sel(flag_en));
+	
+	D_FF dff_1(.q, .d, .reset, .clk);
+
+endmodule
+
+module flag_reg_testbench();
+	logic new_flag, clk, reset, flag_en;
+	logic q;
+	
+endmodule
+

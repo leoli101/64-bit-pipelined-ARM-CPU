@@ -1,0 +1,8 @@
+Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
+Info (10281): Verilog HDL Declaration information at instr_fetch.sv(6): object "UncondBr" differs only in case from object "uncondbr" in the same scope File: U:/EE469_lab4_Yinghao_Li_Wenjie_Ma/instr_fetch.sv Line: 6
+Info (10281): Verilog HDL Declaration information at instr_fetch.sv(6): object "BrTaken" differs only in case from object "brtaken" in the same scope File: U:/EE469_lab4_Yinghao_Li_Wenjie_Ma/instr_fetch.sv Line: 6
+Info (10281): Verilog HDL Declaration information at datapath.sv(5): object "ALUSrc" differs only in case from object "alusrc" in the same scope File: U:/EE469_lab4_Yinghao_Li_Wenjie_Ma/datapath.sv Line: 5
+Info (10281): Verilog HDL Declaration information at instr_path.sv(6): object "UncondBr" differs only in case from object "uncondbr" in the same scope File: U:/EE469_lab4_Yinghao_Li_Wenjie_Ma/instr_path.sv Line: 6
+Info (10281): Verilog HDL Declaration information at instr_path.sv(6): object "BrTaken" differs only in case from object "brtaken" in the same scope File: U:/EE469_lab4_Yinghao_Li_Wenjie_Ma/instr_path.sv Line: 6
+Warning (10030): Net "norm_result_mem" at CPU.sv(50) has no driver or initial value, using a default initial value '0' File: U:/EE469_lab4_Yinghao_Li_Wenjie_Ma/CPU.sv Line: 50
+Warning (10030): Net "data_b_mem" at CPU.sv(51) has no driver or initial value, using a default initial value '0' File: U:/EE469_lab4_Yinghao_Li_Wenjie_Ma/CPU.sv Line: 51

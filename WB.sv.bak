@@ -1,0 +1,3 @@
+module WB(RegWrite_reg_wb, dmem_out_reg, norm_result, alu_result_wb, data_to_reg);
+
+endmodule

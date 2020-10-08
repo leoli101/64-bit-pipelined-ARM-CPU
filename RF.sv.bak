@@ -1,0 +1,29 @@
+`timescale 1ns/10ps
+module RF(instr_reg, pc_reg, next_pc, norm_result, data_a, data_b);
+
+	input logic[31:0] instr_reg;
+	input logic[63:0] pc_reg;
+	output logic[63:0] next_pc;
+	
+	logic zero;
+	logic RegWrite, Reg3Loc, Reg2Loc, isADDI, ALUSrc, MemWrite, UncondBr, BrTaken, is_BR, flag_en, read_en;
+	logic[1:0] MemToReg;
+	logic[2:0] ALUop;
+	
+	instr_path ipath(.instr_reg, .pc_reg, .UncondBr, .BrTaken, .is_BR, .next_pc, .BR_addr(data_b), .norm_result);
+	
+	control_unit cu(.zero, .negative, .overflow, .instr(instr_reg), .RegWrite, .Reg3Loc, .Reg2Loc, .isADDI, .ALUSrc, .MemWrite,
+						.ALUop, .MemToReg, .UncondBr, .BrTaken, .is_BR, .flag_en, .read_en);
+
+	logic[4:0] reg_2, reg_3;
+	
+	logic[63:0] data_to_reg;
+	
+	mux5x2_1 reg2_loc(.data1_in(instr[4:0]), .data2_in(instr[20:16]), .data_out(reg_2), .sel(Reg2Loc));
+	
+	mux5x2_1 reg3_loc(.data1_in(instr[4:0]), .data2_in(5'd30), .data_out(reg_3), .sel(Reg3Loc));
+	
+	regfile RegFile(.ReadRegister1(instr[9:5]), .ReadRegister2(reg_2), .WriteRegister(reg_3), .WriteData(data_to_reg), .ReadData1(data_a), .ReadData2(data_b), .RegWrite, .clk);
+
+	
+endmodule

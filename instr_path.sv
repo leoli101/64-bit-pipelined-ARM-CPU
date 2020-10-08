@@ -1,0 +1,31 @@
+`timescale 1ns/10ps
+module instr_path(instr_reg, pc_reg, UncondBr, BrTaken, is_BR, next_pc, BR_addr, norm_result);
+
+	input logic[31:0] instr_reg;
+	input logic[63:0] pc_reg, BR_addr, norm_result;
+	input logic UncondBr, BrTaken, is_BR;
+	output logic[63:0] next_pc;
+	
+	logic[63:0] SE_Imm26, SE_Imm19, BrAddr, BrAddr_final;
+	
+	SignedExtend #(.WIDTH(19)) SE_1(.data_in(instr_reg[23:5]), .data_out(SE_Imm19));
+	
+	SignedExtend #(.WIDTH(26)) SE_2(.data_in(instr_reg[25:0]), .data_out(SE_Imm26));
+	
+	mux64x2_1 uncondbr(.data1_in(SE_Imm19), .data2_in(SE_Imm26), .data_out(BrAddr), .sel(UncondBr));
+	
+	shift_2 shifter(.data_in(BrAddr), .data_out(BrAddr_final));
+	
+	logic [63:0] Br_result;
+	logic overflow_1, carry_out_1;
+	logic [63:0] not_BR;
+	
+	adder_64 adder1(.data_in_1(pc_reg), .data_in_2(BrAddr_final), .data_out(Br_result), .overflow(overflow_1), .carry_out(carry_out_1));
+	
+	//adder_64 adder2(.data_in_1(pc_reg), .data_in_2(64'd4), .data_out(norm_result), .overflow(overflow_2), .carry_out(carry_out_2));
+	
+	mux64x2_1 brtaken(.data1_in(norm_result), .data2_in(Br_result), .data_out(not_BR), .sel(BrTaken));
+	
+	mux64x2_1 BR(.data1_in(not_BR), .data2_in(BR_addr), .data_out(next_pc), .sel(is_BR));
+	
+endmodule

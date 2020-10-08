@@ -1,0 +1,38 @@
+module RF_EX_register(data_a, data_b, isADDI, MemWrite, ALUSrc, flag_en, read_en, RegWrite, MemToReg, ALUop,
+								data_a_ex, data_b_ex, isADDI_reg, MemWrite_reg, ALUSrc_reg, flag_en_reg, read_en_reg, 
+								RegWrite_reg, MemToReg_reg, ALUop_reg, clk);
+
+	input logic[63:0] data_a, data_b;
+	input logic isADDI, MemWrite, ALUSrc, flag_en, read_en, RegWrite, MemToReg;
+	input logic[2:0] ALUop;
+
+	output logic[63:0] data_a_ex, data_b_ex;
+	output logic isADDI_reg, MemWrite_reg, ALUSrc_reg, flag_en_reg, read_en_reg, RegWrite_reg, MemToReg_reg;
+	output logic[2:0] ALUop_reg;
+
+	genvar i;
+	
+	generate
+	
+		for (i = 0; i < 64; i++) begin : each_1
+			D_FF each_dff(.q(data_a_ex[i]), .d(data_a[i]), .reset(1'b0), .clk);
+		end
+		
+		for (i = 0; i < 64; i++) begin : each_1
+			D_FF each_dff(.q(data_b_ex[i]), .d(data_b[i]), .reset(1'b0), .clk);
+		end
+		
+		for (i = 0; i < 3; i++) begin : each_1
+			D_FF each_dff(.q(ALUop_reg[i]), .d(ALUop[i]), .reset(1'b0), .clk);
+		end
+	endgenerate
+	
+	// control signal
+	D_FF each_dff(.q(isADDI_reg), .d(isADDI), .reset(1'b0), .clk);
+	D_FF each_dff(.q(MemWrite_reg), .d(MemWrite), .reset(1'b0), .clk);
+	D_FF each_dff(.q(ALUSrc_reg), .d(ALUSrc), .reset(1'b0), .clk);
+	D_FF each_dff(.q(flag_en_reg), .d(flag_en), .reset(1'b0), .clk);
+	D_FF each_dff(.q(read_en_reg), .d(read_en), .reset(1'b0), .clk);
+	D_FF each_dff(.q(RegWrite_reg), .d(RegWrite), .reset(1'b0), .clk);
+	D_FF each_dff(.q(MemToReg_reg), .d(MemToReg_reg), .reset(1'b0), .clk);
+endmodule

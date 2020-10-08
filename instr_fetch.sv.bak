@@ -1,0 +1,16 @@
+module instr_fetch(instr_addr, UncondBr, BrTaken, Imm26, Imm19, instr_out);
+
+	input instr_addr[63:0];
+	input logic UncondBr, BrTaken;
+	input logic[25:0] Imm26;
+	input logic[18:0] Imm19;
+	output logic[31:0] instr_out;
+	
+	logic[63:0] SE_Imm26, SE_Imm19, BrAddr;
+	
+	SignedExtend #(.WIDTH(19)) SE_1(.data_in(Imm19), .data_out(SE_Imm19));
+	
+	SignedExtend #(.WIDTH(26)) SE_2(.data_in(Imm26), .data_out(SE_Imm26));
+	
+	mux64x2_1 which_br(.data1_in(SE_Imm19), .data2_in(SE_Imm26), .data_out(BrAddr), .sel(UncondBr));
+endmodule

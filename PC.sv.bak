@@ -1,0 +1,10 @@
+module PC(instr_addr_in, instr_addr_out, clk, reset);
+
+	genvar i;
+	
+	generate
+		for (i = 0; i < 64; i++) begin : each_itr
+			D_FF each_dff(.q(instr_addr_out), .d(instr__addr_in), .reset, .clk);
+		end
+	endgenerate
+endmodule

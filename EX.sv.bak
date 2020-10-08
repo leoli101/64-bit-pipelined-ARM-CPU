@@ -1,0 +1,20 @@
+module EX(data_a_ex, data_b_ex, isADDI_reg, ALUSrc_reg, ALUop_reg, neg_reg, zero_reg, overflow_reg, carryout_reg,
+			 flag_en_reg, instr_reg_ex);
+
+	input logic[31:0] instr_reg_ex;
+	input logic[63:0] data_a_ex, data_b_ex;
+	input logic isADDI_reg, ALUSrc_reg, neg_reg, zero_reg, overflow_reg, carryout_reg, flag_en_reg;
+	input logic[2:0] ALUop_reg;
+		
+	logic[63:0] SE_Imm9, SE_Imm12, SE_out, alu_2;
+	
+	SignedExtend #(.WIDTH(9)) se_9(.data_in(instr_reg_ex[20:12]), .data_out(SE_Imm9));
+	
+	ZeroExtend #(.WIDTH(12)) se_12(.data_in(instr_reg_ex[21:10]), .data_out(SE_Imm12));
+	
+	mux64x2_1 ADDI(.data1_in(SE_Imm9), .data2_in(SE_Imm12), .data_out(SE_out), .sel(isADDI_reg));
+	
+	mux64x2_1 alusrc(.data1_in(data_b_ex), .data2_in(SE_out), .data_out(alu_2), .sel(ALUSrc_reg));
+	
+	alu alu_1(.A(data_a_ex), .B(alu_2), .cntrl(ALUop), .result(alu_result), .negative, .zero, .overflow, .carry_out);
+endmodule

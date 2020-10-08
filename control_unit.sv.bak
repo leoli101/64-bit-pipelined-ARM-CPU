@@ -1,0 +1,186 @@
+`timescale 1ns/10ps
+module control_unit(negative, overflow, instr, RegWrite, Reg3Loc, Reg2Loc, isADDI, ALUSrc, MemWrite,
+						ALUop, MemToReg, UncondBr, BrTaken, is_BR, flag_en);
+						
+	input logic[31:0] instr;
+	input logic negative, overflow;
+	output logic RegWrite, Reg3Loc, Reg2Loc, isADDI, ALUSrc, MemWrite, UncondBr, BrTaken, is_BR, flag_en;
+	output logic[1:0] MemToReg;
+	output logic[2:0] ALUop;
+	
+	logic res;
+	xor #0.05 xor_1(res, negative, overflow);
+	
+	always_comb begin
+		casex (instr[31:21])
+			11'b1001000100x: // ADDI
+									begin
+										RegWrite = 1'b1;
+										Reg3Loc = 1'b0;
+										Reg2Loc = 1'bx;
+										isADDI = 1'b1;
+										ALUSrc = 1'b1;
+										MemWrite = 1'b0;
+										UncondBr = 1'bx;
+										BrTaken = 1'b0;
+										is_BR = 1'b0;
+										flag_en = 1'b0;
+										MemToReg = 2'b00;
+										ALUop = 3'b010;
+									end
+			
+			11'b10101011000: // ADDS
+									begin
+										RegWrite = 1'b1;
+										Reg3Loc = 1'b0;
+										Reg2Loc = 1'b1;
+										isADDI = 1'bx;
+										ALUSrc = 1'b0;
+										MemWrite = 1'b0;
+										UncondBr = 1'bx;
+										BrTaken = 1'b0;
+										is_BR = 1'b0;
+										flag_en = 1'b1;
+										MemToReg = 2'b00;
+										ALUop = 3'b010;
+									end
+			11'b000101xxxxx: // B
+									begin
+										RegWrite = 1'b0;
+										Reg3Loc = 1'bx;
+										Reg2Loc = 1'bx;
+										isADDI = 1'bx;
+										ALUSrc = 1'bx;
+										MemWrite = 1'b0;
+										UncondBr = 1'b1;
+										BrTaken = 1'b1;
+										is_BR = 1'b0;
+										flag_en = 1'b0;
+										MemToReg = 2'bxx;
+										ALUop = 3'bxxx;
+									end
+			11'b01010100xxx: // B.LT
+									begin
+										RegWrite = 1'b0;
+										Reg3Loc = 1'bx;
+										Reg2Loc = 1'bx;
+										isADDI = 1'bx;
+										ALUSrc = 1'bx;
+										MemWrite = 1'b0;
+										UncondBr = 1'b0;
+										BrTaken = res;
+										is_BR = 1'b0;
+										flag_en = 1'b0;
+										MemToReg = 2'bxx;
+										ALUop = 3'bxxx;
+									end
+			11'b100101xxxxx: // BL
+									begin
+										RegWrite = 1'b1;
+										Reg3Loc = 1'b0;
+										Reg2Loc = 1'bx;
+										isADDI = 1'bx;
+										ALUSrc = 1'bx;
+										MemWrite = 1'b0;
+										UncondBr = 1'b1;
+										BrTaken = 1'b1;
+										is_BR = 1'b0;
+										flag_en = 1'b0;
+										MemToReg = 2'b10;
+										ALUop = 3'bxxx;
+									end
+			11'b11010110000: // BR
+									begin
+										RegWrite = 1'b0;
+										Reg3Loc = 1'bx;
+										Reg2Loc = 1'bx;
+										isADDI = 1'bx;
+										ALUSrc = 1'bx;
+										MemWrite = 1'b0;
+										UncondBr = 1'bx;
+										BrTaken = 1'bx;
+										is_BR = 1'b1;
+										flag_en = 1'b0;
+										MemToReg = 2'bxx;
+										ALUop = 3'bxxx;
+									end
+			11'b10110100xxx: // CBZ
+									begin
+										RegWrite = 1'b0;
+										Reg3Loc = 1'bx;
+										Reg2Loc = 1'b0;
+										isADDI = 1'bx;
+										ALUSrc = 1'b0;
+										MemWrite = 1'b0;
+										UncondBr = 1'b0;
+										BrTaken = 1'b1;
+										is_BR = 1'b0;
+										flag_en = 1'b0;
+										MemToReg = 2'bxx;
+										ALUop = 3'b000; // pass_B
+									end
+			11'b11111000010: // LDUR
+									begin
+										RegWrite = 1'b1;
+										Reg3Loc = 1'b0;
+										Reg2Loc = 1'bx;
+										isADDI = 1'b0;
+										ALUSrc = 1'b1;
+										MemWrite = 1'b0;
+										UncondBr = 1'bx;
+										BrTaken = 1'b0;
+										is_BR = 1'b0;
+										flag_en = 1'b0;
+										MemToReg = 2'b01;
+										ALUop = 3'b010;
+									end
+			11'b11111000000: // STUR
+									begin
+										RegWrite = 1'b0;
+										Reg3Loc = 1'bx;
+										Reg2Loc = 1'b0;
+										isADDI = 1'bx;
+										ALUSrc = 1'b0;
+										MemWrite = 1'b1;
+										UncondBr = 1'bx;
+										BrTaken = 1'b0;
+										is_BR = 1'b0;
+										flag_en = 1'b0;
+										MemToReg = 2'bxx;
+										ALUop = 3'b010;
+									end
+			11'b11101011000: // SUBS
+									begin
+										RegWrite = 1'b1;
+										Reg3Loc = 1'b0;
+										Reg2Loc = 1'b1;
+										isADDI = 1'bx;
+										ALUSrc = 1'b0;
+										MemWrite = 1'b0;
+										UncondBr = 1'bx;
+										BrTaken = 1'b0;
+										is_BR = 1'b0;
+										flag_en = 1'b1;
+										MemToReg = 2'b00;
+										ALUop = 3'b011;
+									end
+			default: 
+									begin
+										RegWrite = 0;
+										Reg3Loc = 0;
+										Reg2Loc = 0;
+										isADDI = 0;
+										ALUSrc = 0;
+										MemWrite = 0;
+										UncondBr = 0;
+										BrTaken = 0;
+										is_BR = 0;
+										flag_en = 0;
+										MemToReg = 2'b0;
+										ALUop = 3'b000;
+									end
+		endcase
+	end
+	
+endmodule
+

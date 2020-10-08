@@ -1,0 +1,38 @@
+`timescale 1ns/10ps
+module CPU(clk, reset);
+
+	input logic clk, reset;
+	
+	logic next_pc, cur_pc;
+	
+	logic[31:0] instr;
+	
+	logic negative, overflow, RegWrite, Reg3Loc, Reg2Loc, isADDI, ALUSrc, MemWrite,
+			zero, carry_out, UncondBr, BrTaken, is_BR, flag_en;
+						
+	logic[1:0] MemToReg;
+	logic[2:0] ALUop;
+	
+	PC prog_counter(.instr_addr_in(next_pc), .instr_addr_out(cur_pc), .clk, .reset);
+	
+	instructmem instr_out(.address(cur_pc), .instruction(instr), .clk);
+	
+	flag_reg neg(.new_flag(negative), .flag_en, .q(neg_reg), .clk, .reset);
+	
+	flag_reg zero_1(.new_flag(zero), .flag_en, .q(zero_reg), .clk, .reset);
+	
+	flag_reg overflow_1(.new_flag(overflow), .flag_en, .q(overflow_reg), .clk, .reset);
+	
+	flag_reg cout(.new_flag(carry_out), .flag_en, .q(carry_out_reg), .clk, .reset);
+	
+	control_unit cu(negative, overflow, instr, RegWrite, Reg3Loc, Reg2Loc, isADDI, ALUSrc, MemWrite,
+						ALUop, MemToReg, UncondBr, BrTaken, is_BR, flag_en);
+	
+	instr_fetch ifetch(.is_BR, .UncondBr, .BrTaken, .Imm26, Imm19, reset, 
+							clk, BR_addr, norm_result, cur_pc, next_pc);
+	
+endmodule
+
+module CPU_testbench();
+
+endmodule
